@@ -1,0 +1,8 @@
+{
+  "name": "clean-code-api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:acmesquita/clean-code-api.git",
+  "author": "Catharina Mesquita <catha.ana.1994@gmail.com>",
+  "license": "MIT"
+}
