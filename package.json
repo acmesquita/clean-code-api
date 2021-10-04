@@ -8,10 +8,11 @@
   "scripts": {},
   "lint-staged": {
     "*.js": [
-      "standard"
+      "standard --fix",
+      "git add"
     ]
   },
-  "husk": {
+  "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
     }
