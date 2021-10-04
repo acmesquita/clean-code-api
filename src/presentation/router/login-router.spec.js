@@ -2,8 +2,18 @@ import { MissingParamsError } from '../helpers/missing-params-error'
 import { LoginRouter } from './login-router'
 
 const makeSut = () => {
+  class AuthUseCaseSpy {
+    auth (email, password) {
+      this.email = email
+      this.password = password
+    }
+  }
+
+  const authUserCaseSpy = new AuthUseCaseSpy()
+
   return {
-    sut: new LoginRouter()
+    sut: new LoginRouter(authUserCaseSpy),
+    authUserCaseSpy
   }
 }
 
@@ -48,16 +58,18 @@ describe('Login Router', () => {
     expect(httpResponse.statusCode).toBe(500)
   })
 
-  xtest('Should call authUseCase with correct params', () => {
-    const { sut } = makeSut()
+  test('Should call AuthUseCase with correct params', () => {
+    const { sut, authUserCaseSpy } = makeSut()
     const httpRequest = {
       body: {
         email: 'any@email.com',
         password: 'any_password'
       }
     }
-    const httpResponse = sut.route(httpRequest)
 
-    expect(httpResponse.statusCode).toBe(500)
+    sut.route(httpRequest)
+
+    expect(authUserCaseSpy.email).toBe(httpRequest.body.email)
+    expect(authUserCaseSpy.password).toBe(httpRequest.body.password)
   })
 })
