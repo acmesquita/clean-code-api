@@ -7,10 +7,12 @@ const makeSut = () => {
     auth (email, password) {
       this.email = email
       this.password = password
+      return this.accessToken
     }
   }
 
   const authUserCaseSpy = new AuthUseCaseSpy()
+  authUserCaseSpy.accessToken = 'valid_token'
 
   return {
     sut: new LoginRouter(authUserCaseSpy),
@@ -75,7 +77,9 @@ describe('Login Router', () => {
   })
 
   test('Should return 401 when invalid credentials are provider', () => {
-    const { sut } = makeSut()
+    const { sut, authUserCaseSpy } = makeSut()
+    authUserCaseSpy.accessToken = null
+
     const httpRequest = {
       body: {
         email: 'invalid_email@email.com',
@@ -87,5 +91,47 @@ describe('Login Router', () => {
 
     expect(httpResponse.statusCode).toBe(401)
     expect(httpResponse.body).toEqual(new UnauthorizedErro())
+  })
+
+  test('Should return 200 when valid credentials are provider', () => {
+    const { sut } = makeSut()
+    const httpRequest = {
+      body: {
+        email: 'valid_email@email.com',
+        password: 'valid_password'
+      }
+    }
+
+    const httpResponse = sut.route(httpRequest)
+
+    expect(httpResponse.statusCode).toBe(200)
+  })
+
+  test('Should return 500 if no authUseCase is provider', () => {
+    const sut = new LoginRouter()
+    const httpRequest = {
+      body: {
+        email: 'any_email@email.com',
+        password: 'any_password'
+      }
+    }
+
+    const httpResponse = sut.route(httpRequest)
+
+    expect(httpResponse.statusCode).toBe(500)
+  })
+
+  test('Should return 500 if no authUseCase has no method auth', () => {
+    const sut = new LoginRouter({})
+    const httpRequest = {
+      body: {
+        email: 'any_email@email.com',
+        password: 'any_password'
+      }
+    }
+
+    const httpResponse = sut.route(httpRequest)
+
+    expect(httpResponse.statusCode).toBe(500)
   })
 })
