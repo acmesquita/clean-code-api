@@ -20,9 +20,10 @@ export class LoginRouter {
 
     const accessToken = this.authUserCase.auth(email, password)
 
-    if (accessToken) {
-      return HttpResponse.ok(accessToken)
+    if (!accessToken) {
+      return HttpResponse.unauthorizedErro()
     }
-    return HttpResponse.unauthorizedErro()
+
+    return HttpResponse.ok({ accessToken })
   }
 }
