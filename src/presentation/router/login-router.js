@@ -19,5 +19,9 @@ export class LoginRouter {
     }
 
     this.authUserCase.auth(email, password)
+
+    return {
+      statusCode: 401
+    }
   }
 }
