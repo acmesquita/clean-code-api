@@ -6,7 +6,8 @@
   "author": "Catharina Mesquita <catha.ana.1994@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "test": "jest -w"
+    "test": "jest",
+    "test:staged": "jest"
   },
   "standard": {
     "env": [
