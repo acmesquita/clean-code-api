@@ -5,17 +5,14 @@
   "repository": "git@github.com:acmesquita/clean-code-api.git",
   "author": "Catharina Mesquita <catha.ana.1994@gmail.com>",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "prepare": "husky install"
+  },
   "lint-staged": {
     "*.js": [
       "standard --fix",
       "git add"
     ]
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
   },
   "devDependencies": {
     "husky": "^7.0.2",
