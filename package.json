@@ -5,7 +5,20 @@
   "repository": "git@github.com:acmesquita/clean-code-api.git",
   "author": "Catharina Mesquita <catha.ana.1994@gmail.com>",
   "license": "MIT",
+  "scripts": {},
+  "lint-staged": {
+    "*.js": [
+      "standard"
+    ]
+  },
+  "husk": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
   "devDependencies": {
+    "husk": "^0.5.3",
+    "lint-staged": "^11.2.0",
     "standard": "^16.0.4"
   }
 }
