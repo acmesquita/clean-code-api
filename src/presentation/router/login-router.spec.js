@@ -1,8 +1,17 @@
 import { MissingParamsError } from '../helpers/missing-params-error'
+import { ServerError } from '../helpers/server-error'
 import { UnauthorizedErro } from '../helpers/unauthorized-error'
 import { LoginRouter } from './login-router'
 
 const makeSut = () => {
+  const authUseCaseSpy = makeAuthUseCase()
+  return {
+    sut: new LoginRouter(authUseCaseSpy),
+    authUseCaseSpy
+  }
+}
+
+const makeAuthUseCase = () => {
   class AuthUseCaseSpy {
     auth (email, password) {
       this.email = email
@@ -11,13 +20,20 @@ const makeSut = () => {
     }
   }
 
-  const authUserCaseSpy = new AuthUseCaseSpy()
-  authUserCaseSpy.accessToken = 'valid_token'
+  const authUseCaseSpy = new AuthUseCaseSpy()
+  authUseCaseSpy.accessToken = 'valid_token'
 
-  return {
-    sut: new LoginRouter(authUserCaseSpy),
-    authUserCaseSpy
+  return authUseCaseSpy
+}
+
+const makeAuthUseCaseWithError = () => {
+  class AuthUseCaseSpy {
+    auth () {
+      throw new Error()
+    }
   }
+
+  return new AuthUseCaseSpy()
 }
 
 describe('Login Router', () => {
@@ -52,6 +68,7 @@ describe('Login Router', () => {
     const httpResponse = sut.route()
 
     expect(httpResponse.statusCode).toBe(500)
+    expect(httpResponse.body).toEqual(new ServerError())
   })
 
   test('Should return 500 if no body is provided', () => {
@@ -59,10 +76,11 @@ describe('Login Router', () => {
     const httpResponse = sut.route({})
 
     expect(httpResponse.statusCode).toBe(500)
+    expect(httpResponse.body).toEqual(new ServerError())
   })
 
   test('Should call AuthUseCase with correct params', () => {
-    const { sut, authUserCaseSpy } = makeSut()
+    const { sut, authUseCaseSpy } = makeSut()
     const httpRequest = {
       body: {
         email: 'any@email.com',
@@ -72,13 +90,13 @@ describe('Login Router', () => {
 
     sut.route(httpRequest)
 
-    expect(authUserCaseSpy.email).toBe(httpRequest.body.email)
-    expect(authUserCaseSpy.password).toBe(httpRequest.body.password)
+    expect(authUseCaseSpy.email).toBe(httpRequest.body.email)
+    expect(authUseCaseSpy.password).toBe(httpRequest.body.password)
   })
 
   test('Should return 401 when invalid credentials are provider', () => {
-    const { sut, authUserCaseSpy } = makeSut()
-    authUserCaseSpy.accessToken = null
+    const { sut, authUseCaseSpy } = makeSut()
+    authUseCaseSpy.accessToken = null
 
     const httpRequest = {
       body: {
@@ -94,7 +112,7 @@ describe('Login Router', () => {
   })
 
   test('Should return 200 when valid credentials are provider', () => {
-    const { sut, authUserCaseSpy } = makeSut()
+    const { sut, authUseCaseSpy } = makeSut()
     const httpRequest = {
       body: {
         email: 'valid_email@email.com',
@@ -105,7 +123,7 @@ describe('Login Router', () => {
     const httpResponse = sut.route(httpRequest)
 
     expect(httpResponse.statusCode).toBe(200)
-    expect(httpResponse.body.accessToken).toEqual(authUserCaseSpy.accessToken)
+    expect(httpResponse.body.accessToken).toEqual(authUseCaseSpy.accessToken)
   })
 
   test('Should return 500 if no authUseCase is provider', () => {
@@ -120,6 +138,7 @@ describe('Login Router', () => {
     const httpResponse = sut.route(httpRequest)
 
     expect(httpResponse.statusCode).toBe(500)
+    expect(httpResponse.body).toEqual(new ServerError())
   })
 
   test('Should return 500 if no authUseCase has no method auth', () => {
@@ -134,5 +153,22 @@ describe('Login Router', () => {
     const httpResponse = sut.route(httpRequest)
 
     expect(httpResponse.statusCode).toBe(500)
+    expect(httpResponse.body).toEqual(new ServerError())
+  })
+
+  test('Should return 500 if no authUseCase throws', () => {
+    const authUseCaseSpy = makeAuthUseCaseWithError()
+    const sut = new LoginRouter(authUseCaseSpy)
+    const httpRequest = {
+      body: {
+        email: 'any_email@email.com',
+        password: 'any_password'
+      }
+    }
+
+    const httpResponse = sut.route(httpRequest)
+
+    expect(httpResponse.statusCode).toBe(500)
+    expect(httpResponse.body).toEqual(new ServerError())
   })
 })
