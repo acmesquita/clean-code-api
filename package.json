@@ -6,7 +6,12 @@
   "author": "Catharina Mesquita <catha.ana.1994@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "test": "jest"
+    "test": "jest -w"
+  },
+  "standard": {
+    "env": [
+      "jest"
+    ]
   },
   "lint-staged": {
     "*.js": [
