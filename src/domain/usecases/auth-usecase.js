@@ -1,9 +1,10 @@
 import { MissingParamsError } from '../../utils/errors'
 
 export class AuthUseCase {
-  constructor (loadUserByEmailRepository, encryper) {
+  constructor (loadUserByEmailRepository, encryper, tokenGenerator) {
     this.loadUserByEmailRepository = loadUserByEmailRepository
     this.encryper = encryper
+    this.tokenGenerator = tokenGenerator
   }
 
   async auth (email, password) {
@@ -26,5 +27,7 @@ export class AuthUseCase {
     if (!isValid) {
       return null
     }
+
+    return await this.tokenGenerator.generate(user.id)
   }
 }
