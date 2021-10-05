@@ -1,16 +1,17 @@
 import { MissingParamsError } from '../../utils/errors'
 
 export class AuthUseCase {
-  constructor (loadUserByEmailRepository) {
+  constructor (loadUserByEmailRepository, encryper) {
     this.loadUserByEmailRepository = loadUserByEmailRepository
+    this.encryper = encryper
   }
 
-  async auth (email, passowrd) {
+  async auth (email, password) {
     if (!email) {
       throw new MissingParamsError('email')
     }
 
-    if (!passowrd) {
+    if (!password) {
       throw new MissingParamsError('password')
     }
 
@@ -19,6 +20,8 @@ export class AuthUseCase {
     if (!user) {
       return null
     }
+
+    await this.encryper.compare(password, user.password)
 
     return null
   }

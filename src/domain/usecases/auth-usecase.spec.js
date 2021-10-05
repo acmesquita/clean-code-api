@@ -2,6 +2,13 @@ import { MissingParamsError } from '../../utils/errors'
 import { AuthUseCase } from './auth-usecase'
 
 const makeSut = () => {
+  class EncrypterSpy {
+    async compare (passowrd, hashedPassword) {
+      this.password = passowrd
+      this.hashedPassword = hashedPassword
+    }
+  }
+
   class LoadUserByEmailRepositorySpy {
     async load (email) {
       this.email = email
@@ -9,14 +16,19 @@ const makeSut = () => {
     }
   }
 
-  const loadUserByEmailRepositorySpy = new LoadUserByEmailRepositorySpy()
-  loadUserByEmailRepositorySpy.user = {}
+  const encryperSpy = new EncrypterSpy()
 
-  const authUserCase = new AuthUseCase(loadUserByEmailRepositorySpy)
+  const loadUserByEmailRepositorySpy = new LoadUserByEmailRepositorySpy()
+  loadUserByEmailRepositorySpy.user = {
+    passowrd: 'hashed_password'
+  }
+
+  const authUserCase = new AuthUseCase(loadUserByEmailRepositorySpy, encryperSpy)
 
   return {
     sut: authUserCase,
-    loadUserByEmailRepositorySpy
+    loadUserByEmailRepositorySpy,
+    encryperSpy
   }
 }
 
@@ -67,5 +79,13 @@ describe('AuthUseCase', () => {
     const accessToken = await sut.auth('valid_email@email', 'invalid_password')
 
     expect(accessToken).toBeNull()
+  })
+
+  test('Should call Encripter with correct values', async () => {
+    const { sut, loadUserByEmailRepositorySpy, encryperSpy } = makeSut()
+    await sut.auth('valid_email@email', 'any_password')
+
+    expect(encryperSpy.password).toBe('any_password')
+    expect(encryperSpy.hashedPassword).toBe(loadUserByEmailRepositorySpy.user.password)
   })
 })
