@@ -1,4 +1,4 @@
-import { InvalidParamsError, MissingParamsError } from '../../utils/errors'
+import { MissingParamsError } from '../../utils/errors'
 
 export class AuthUseCase {
   constructor (loadUserByEmailRepository) {
@@ -12,14 +12,6 @@ export class AuthUseCase {
 
     if (!passowrd) {
       throw new MissingParamsError('password')
-    }
-
-    if (!this.loadUserByEmailRepository) {
-      throw new MissingParamsError('loadUserByEmailRepository')
-    }
-
-    if (!this.loadUserByEmailRepository.load) {
-      throw new InvalidParamsError('loadUserByEmailRepository')
     }
 
     const user = await this.loadUserByEmailRepository.load(email)
