@@ -1,27 +1,39 @@
 import { MissingParamsError } from '../../utils/errors'
 import { AuthUseCase } from './auth-usecase'
 
-const makeSut = () => {
+const makeEncrypterSpy = () => {
   class EncrypterSpy {
     async compare (passowrd, hashedPassword) {
       this.password = passowrd
       this.hashedPassword = hashedPassword
+
+      return this.isValid
     }
   }
+  const encryperSpy = new EncrypterSpy()
+  encryperSpy.isValid = true
 
+  return encryperSpy
+}
+
+const makeLoadUserByEmailRepositorySpy = () => {
   class LoadUserByEmailRepositorySpy {
     async load (email) {
       this.email = email
       return this.user
     }
   }
-
-  const encryperSpy = new EncrypterSpy()
-
   const loadUserByEmailRepositorySpy = new LoadUserByEmailRepositorySpy()
   loadUserByEmailRepositorySpy.user = {
     passowrd: 'hashed_password'
   }
+  return loadUserByEmailRepositorySpy
+}
+
+const makeSut = () => {
+  const encryperSpy = makeEncrypterSpy()
+
+  const loadUserByEmailRepositorySpy = makeLoadUserByEmailRepositorySpy()
 
   const authUserCase = new AuthUseCase(loadUserByEmailRepositorySpy, encryperSpy)
 
@@ -75,7 +87,8 @@ describe('AuthUseCase', () => {
   })
 
   test('Should return null if an invalid password is provider', async () => {
-    const { sut } = makeSut()
+    const { sut, encryperSpy } = makeSut()
+    encryperSpy.isValid = false
     const accessToken = await sut.auth('valid_email@email', 'invalid_password')
 
     expect(accessToken).toBeNull()

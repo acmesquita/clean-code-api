@@ -21,8 +21,10 @@ export class AuthUseCase {
       return null
     }
 
-    await this.encryper.compare(password, user.password)
+    const isValid = await this.encryper.compare(password, user.password)
 
-    return null
+    if (!isValid) {
+      return null
+    }
   }
 }
