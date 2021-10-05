@@ -31,5 +31,8 @@
     "jest": "^27.2.4",
     "lint-staged": "^11.2.0",
     "standard": "^16.0.4"
+  },
+  "dependencies": {
+    "validator": "^13.6.0"
   }
 }
