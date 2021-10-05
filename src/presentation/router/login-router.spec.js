@@ -6,10 +6,23 @@ import { LoginRouter } from './login-router'
 
 const makeSut = () => {
   const authUseCaseSpy = makeAuthUseCase()
+  const emailValidator = makeEmailValidator()
   return {
-    sut: new LoginRouter(authUseCaseSpy),
-    authUseCaseSpy
+    sut: new LoginRouter(authUseCaseSpy, emailValidator),
+    authUseCaseSpy,
+    emailValidator
   }
+}
+
+const makeEmailValidator = () => {
+  class EmailValidatorSpy {
+    isValid (email) {
+      return this.isEmailValid
+    }
+  }
+  const emailValidatorSpy = new EmailValidatorSpy()
+  emailValidatorSpy.isEmailValid = true
+  return emailValidatorSpy
 }
 
 const makeAuthUseCase = () => {
@@ -64,8 +77,9 @@ describe('Login Router', () => {
     expect(httpResponse.body).toEqual(new MissingParamsError('password'))
   })
 
-  xtest('Should return 400 if an invalid email is provided', async () => {
-    const { sut } = makeSut()
+  test('Should return 400 if an invalid email is provided', async () => {
+    const { sut, emailValidator } = makeSut()
+    emailValidator.isEmailValid = false
     const httpRequest = {
       body: {
         email: 'invalid_email',
