@@ -1,9 +1,9 @@
-import { InvalidParamsError } from '../../presentation/errors'
+import { MissingParamsError } from '../../utils/errors'
 
 class AuthUseCase {
   async auth (email) {
     if (!email) {
-      throw new InvalidParamsError('email')
+      throw new MissingParamsError('email')
     }
   }
 }

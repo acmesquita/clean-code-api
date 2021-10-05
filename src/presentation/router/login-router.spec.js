@@ -1,9 +1,5 @@
-import {
-  MissingParamsError,
-  ServerError,
-  InvalidParamsError,
-  UnauthorizedErro
-} from '../errors'
+import { MissingParamsError, InvalidParamsError } from '../../utils/errors'
+import { ServerError, UnauthorizedErro } from '../errors'
 
 import { LoginRouter } from './login-router'
 
