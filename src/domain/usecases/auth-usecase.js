@@ -18,16 +18,12 @@ export class AuthUseCase {
 
     const user = await this.loadUserByEmailRepository.load(email)
 
-    if (!user) {
+    const isValid = user && await this.encryper.compare(password, user.password)
+
+    if (isValid) {
+      return await this.tokenGenerator.generate(user.id)
+    } else {
       return null
     }
-
-    const isValid = await this.encryper.compare(password, user.password)
-
-    if (!isValid) {
-      return null
-    }
-
-    return await this.tokenGenerator.generate(user.id)
   }
 }
