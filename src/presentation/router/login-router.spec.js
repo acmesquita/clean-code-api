@@ -1,5 +1,6 @@
 import { MissingParamsError } from '../helpers/missing-params-error'
 import { ServerError } from '../helpers/server-error'
+import { InvalidParamsError } from '../helpers/invalid-params-error'
 import { UnauthorizedErro } from '../helpers/unauthorized-error'
 import { LoginRouter } from './login-router'
 
@@ -61,6 +62,20 @@ describe('Login Router', () => {
 
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body).toEqual(new MissingParamsError('password'))
+  })
+
+  xtest('Should return 400 if an invalid email is provided', async () => {
+    const { sut } = makeSut()
+    const httpRequest = {
+      body: {
+        email: 'invalid_email',
+        password: 'any_password'
+      }
+    }
+    const httpResponse = await sut.route(httpRequest)
+
+    expect(httpResponse.statusCode).toBe(400)
+    expect(httpResponse.body).toEqual(new InvalidParamsError('email'))
   })
 
   test('Should return 500 if no httpRequest is provided', async () => {
