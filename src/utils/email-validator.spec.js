@@ -1,10 +1,5 @@
 import validator from 'validator'
-
-class EmailValidator {
-  isValid (email) {
-    return validator.isEmail(email)
-  }
-}
+import { EmailValidator } from './email-validator'
 
 const makeSut = () => {
   return new EmailValidator()
