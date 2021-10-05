@@ -96,6 +96,13 @@ describe('AuthUseCase', () => {
     expect(promise).rejects.toThrow()
   })
 
+  test('Should throw if dependences is provider', async () => {
+    const sut = new AuthUseCase()
+    const promise = sut.auth('any_email@email.com', 'any_password')
+
+    expect(promise).rejects.toThrow()
+  })
+
   test('Should return null if an invalid email is provider', async () => {
     const { sut, loadUserByEmailRepositorySpy } = makeSut()
     loadUserByEmailRepositorySpy.user = null
