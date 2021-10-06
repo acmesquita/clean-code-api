@@ -1,6 +1,9 @@
 export default {
   token: '',
-  async sign (value) {
+  secret: '',
+  async sign (value, secret) {
+    this.value = value
+    this.secret = secret
     return this.token
   }
 }

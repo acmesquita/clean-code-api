@@ -19,6 +19,14 @@ describe('TokenGenerator', () => {
     expect(token).toBe(jwt.token)
   })
 
+  test('Should call validator with correct value', async () => {
+    const sut = makeSut()
+    await sut.generate('any_value')
+
+    expect(jwt.value).toBe('any_value')
+    expect(jwt.secret).toBe(sut.secret)
+  })
+
   test('Should throws if no value is provider', async () => {
     const sut = makeSut()
     expect(sut.generate()).rejects.toThrow(new MissingParamsError('value'))
