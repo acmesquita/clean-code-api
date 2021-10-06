@@ -1,8 +1,9 @@
 import { MissingParamsError } from '../../utils/errors'
 
 export class AuthUseCase {
-  constructor ({ loadUserByEmailRepository, encryper, tokenGenerator } = {}) {
+  constructor ({ loadUserByEmailRepository, updateAccessTokenRepository, encryper, tokenGenerator } = {}) {
     this.loadUserByEmailRepository = loadUserByEmailRepository
+    this.updateAccessTokenRepository = updateAccessTokenRepository
     this.encryper = encryper
     this.tokenGenerator = tokenGenerator
   }
@@ -21,7 +22,9 @@ export class AuthUseCase {
     const isValid = user && await this.encryper.compare(password, user.password)
 
     if (isValid) {
-      return await this.tokenGenerator.generate(user.id)
+      const accessToken = await this.tokenGenerator.generate(user.id)
+      await this.updateAccessTokenRepository.update(user.id, accessToken)
+      return accessToken
     } else {
       return null
     }
