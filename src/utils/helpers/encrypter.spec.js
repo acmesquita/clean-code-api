@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt'
 import { Encrypter } from './encrypter'
+import { MissingParamsError } from '../errors'
 
 const makeSut = () => {
   return new Encrypter()
@@ -27,5 +28,11 @@ describe('Encrypter', () => {
 
     expect(bcrypt.value).toBe('any_value')
     expect(bcrypt.hash).toBe('hash')
+  })
+
+  test('Should throws if incorrect values are provider', async () => {
+    const sut = makeSut()
+    expect(sut.compare()).rejects.toThrow(new MissingParamsError('value'))
+    expect(sut.compare('any_value')).rejects.toThrow(new MissingParamsError('hash'))
   })
 })
