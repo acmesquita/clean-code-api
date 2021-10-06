@@ -73,6 +73,15 @@ const makeUpdateAccessTokenRepositorySpy = () => {
   return new UpdateAccessTokenRepositorySpy()
 }
 
+const makeUpdateAccessTokenRepositoryWithErro = () => {
+  class UpdateAccessTokenRepositorySpy {
+    async update () {
+      throw new Error()
+    }
+  }
+  return new UpdateAccessTokenRepositorySpy()
+}
+
 const makeTokenGeneratorWithErro = () => {
   class TokenGeneratorSpy {
     async generate () {
@@ -181,6 +190,7 @@ describe('AuthUseCase', () => {
     const invalid = {}
     const loadUserByEmailRepository = makeLoadUserByEmailRepositorySpy()
     const encryper = makeEncrypterSpy()
+    const tokenGenerator = makeTokenGeneratorSpy()
 
     const suts = [].concat(
       new AuthUseCase(),
@@ -196,6 +206,17 @@ describe('AuthUseCase', () => {
         loadUserByEmailRepository,
         encryper,
         tokenGenerator: invalid
+      }),
+      new AuthUseCase({
+        loadUserByEmailRepository,
+        encryper,
+        tokenGenerator
+      }),
+      new AuthUseCase({
+        loadUserByEmailRepository,
+        encryper,
+        tokenGenerator,
+        updateAccessTokenRepository: invalid
       })
     )
 
@@ -207,6 +228,8 @@ describe('AuthUseCase', () => {
 
   test('Should throw if dependence throws', async () => {
     const loadUserByEmailRepository = makeLoadUserByEmailRepositorySpy()
+    const encryper = makeEncrypterSpy()
+    const tokenGenerator = makeTokenGeneratorSpy()
 
     const suts = [].concat(
       new AuthUseCase({
@@ -214,12 +237,18 @@ describe('AuthUseCase', () => {
       }),
       new AuthUseCase({
         loadUserByEmailRepository,
-        encryperSpy: makeEncrypterWithError()
+        encryper: makeEncrypterWithError()
       }),
       new AuthUseCase({
         loadUserByEmailRepository,
-        encryperSpy: makeEncrypterSpy(),
+        encryper,
         tokenGenerator: makeTokenGeneratorWithErro()
+      }),
+      new AuthUseCase({
+        loadUserByEmailRepository,
+        encryper,
+        tokenGenerator,
+        updateAccessTokenRepository: makeUpdateAccessTokenRepositoryWithErro()
       })
     )
 
