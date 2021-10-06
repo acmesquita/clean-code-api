@@ -82,27 +82,6 @@ describe('AuthUseCase', () => {
     expect(loadUserByEmailRepositorySpy.email).toBe('any_email@email.com')
   })
 
-  test('Should throw if no LoadUserByEmailRepository is provider', async () => {
-    const sut = new AuthUseCase({ loadUserByEmailRepository: {} })
-    const promise = sut.auth('any_email@email.com', 'any_password')
-
-    expect(promise).rejects.toThrow()
-  })
-
-  test('Should throw if no LoadUserByEmailRepository has no load method', async () => {
-    const sut = new AuthUseCase({})
-    const promise = sut.auth('any_email@email.com', 'any_password')
-
-    expect(promise).rejects.toThrow()
-  })
-
-  test('Should throw if dependences is provider', async () => {
-    const sut = new AuthUseCase()
-    const promise = sut.auth('any_email@email.com', 'any_password')
-
-    expect(promise).rejects.toThrow()
-  })
-
   test('Should return null if an invalid email is provider', async () => {
     const { sut, loadUserByEmailRepositorySpy } = makeSut()
     loadUserByEmailRepositorySpy.user = null
@@ -140,5 +119,33 @@ describe('AuthUseCase', () => {
 
     expect(accessToken).toBe(tokenGeneratorSpy.accessToken)
     expect(accessToken).toBeTruthy()
+  })
+
+  test('Should throw if dependences are provider', async () => {
+    const invalid = {}
+    const loadUserByEmailRepository = makeLoadUserByEmailRepositorySpy()
+    const encryper = makeEncrypterSpy()
+
+    const suts = [].concat(
+      new AuthUseCase(),
+      new AuthUseCase(invalid),
+      new AuthUseCase({
+        loadUserByEmailRepository: invalid
+      }),
+      new AuthUseCase({
+        loadUserByEmailRepository,
+        encryper: invalid
+      }),
+      new AuthUseCase({
+        loadUserByEmailRepository,
+        encryper,
+        tokenGenerator: invalid
+      })
+    )
+
+    for (const sut of suts) {
+      const promise = sut.auth('any_email@email.com', 'any_password')
+      expect(promise).rejects.toThrow()
+    }
   })
 })
