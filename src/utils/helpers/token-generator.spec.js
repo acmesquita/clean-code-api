@@ -31,4 +31,9 @@ describe('TokenGenerator', () => {
     const sut = makeSut()
     expect(sut.generate()).rejects.toThrow(new MissingParamsError('value'))
   })
+
+  test('Should throws if no secret is provider', async () => {
+    const sut = new TokenGenerator()
+    expect(sut.generate()).rejects.toThrow(new MissingParamsError('secret'))
+  })
 })
