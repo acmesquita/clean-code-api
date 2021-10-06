@@ -1,18 +1,6 @@
 import jwt from 'jsonwebtoken'
 import { MissingParamsError } from '../errors'
-
-class TokenGenerator {
-  constructor (secret) {
-    this.secret = secret
-  }
-
-  async generate (value) {
-    if (!value) {
-      throw new MissingParamsError('value')
-    }
-    return jwt.sign(value, this.secret)
-  }
-}
+import { TokenGenerator } from './token-generator'
 
 const makeSut = () => new TokenGenerator('secret')
 
