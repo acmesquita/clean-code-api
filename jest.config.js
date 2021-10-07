@@ -89,6 +89,7 @@ module.exports = {
 
   // A preset that is used as a base for Jest's configuration
   preset: '@shelf/jest-mongodb',
+  watchPathIgnorePatterns: ['globalConfig'],
 
   // Run tests from one or more projects
   // projects: undefined,

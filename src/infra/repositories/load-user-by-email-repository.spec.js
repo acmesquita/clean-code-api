@@ -6,15 +6,27 @@ class LoadUserByEmailRepository {
   }
 
   async load (email) {
-    const user = await this.userModel.findOne({ email })
+    const user = await this.userModel.findOne({ email }, {
+      projection: {
+        password: 1
+      }
+    })
     return user
   }
 }
 
-describe('LoadUserByEmailRepository', () => {
-  let connection
-  let db
+let connection, db
 
+const makeSut = () => {
+  const userModel = db.collection('users')
+
+  return {
+    sut: new LoadUserByEmailRepository(userModel),
+    userModel
+  }
+}
+
+describe('LoadUserByEmailRepository', () => {
   beforeAll(async () => {
     connection = await MongoClient.connect(global.__MONGO_URI__, {
       useNewUrlParser: true,
@@ -32,22 +44,22 @@ describe('LoadUserByEmailRepository', () => {
   })
 
   test('Should return null if no user is found', async () => {
-    const userModel = db.collection('users')
-
-    const sut = new LoadUserByEmailRepository(userModel)
+    const { sut } = makeSut()
     const user = await sut.load('invalid_email@mail.com')
 
     expect(user).toBeNull()
   })
 
   test('Should return user if user is found', async () => {
-    const userModel = db.collection('users')
-    userModel.insertOne({ email: 'valid_email@mail.com' })
-
-    const sut = new LoadUserByEmailRepository(userModel)
+    const { sut, userModel } = makeSut()
+    await userModel.insertOne({
+      email: 'valid_email@mail.com',
+      name: 'any_name',
+      password: 'hashed_password'
+    })
 
     const user = await sut.load('valid_email@mail.com')
 
-    expect(user.email).toBe('valid_email@mail.com')
+    expect(user.password).toBe('hashed_password')
   })
 })
