@@ -6,11 +6,11 @@
   "author": "Catharina Mesquita <catha.ana.1994@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "test": "jest --silent --colors --noStackTrace --passWithNoTests",
+    "test": "jest --colors --noStackTrace --passWithNoTests",
     "test:unit": "yarn test --watch -c jest-unit.config.js",
     "test:intergration": "yarn test -- --watch -c jest-intergration.config.js",
-    "test:staged": "yarn test",
-    "test:ci": "yarn test -- --coverage"
+    "test:staged": "yarn test  --silent",
+    "test:ci": "yarn test -- --coverage  --silent"
   },
   "standard": {
     "env": [
