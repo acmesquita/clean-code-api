@@ -1,7 +1,7 @@
-import { MongoClient } from 'mongodb'
 import { LoadUserByEmailRepository } from './load-user-by-email-repository'
+import MongoHelper from '../helpers/mongo-helper'
 
-let connection, db
+let db
 
 const makeSut = () => {
   const userModel = db.collection('users')
@@ -14,11 +14,8 @@ const makeSut = () => {
 
 describe('LoadUserByEmailRepository', () => {
   beforeAll(async () => {
-    connection = await MongoClient.connect(global.__MONGO_URI__, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true
-    })
-    db = await connection.db()
+    await MongoHelper.connect(global.__MONGO_URI__)
+    db = MongoHelper.db
   })
 
   beforeEach(async () => {
@@ -26,7 +23,7 @@ describe('LoadUserByEmailRepository', () => {
   })
 
   afterAll(async () => {
-    await connection.close()
+    await MongoHelper.disconnect()
   })
 
   test('Should return null if no user is found', async () => {
