@@ -1,5 +1,6 @@
 import { LoadUserByEmailRepository } from './load-user-by-email-repository'
 import MongoHelper from '../helpers/mongo-helper'
+import { MissingParamsError } from '../../utils/errors'
 
 let db
 
@@ -51,5 +52,12 @@ describe('LoadUserByEmailRepository', () => {
     const promise = sut.load('any_email@mail.com')
 
     expect(promise).rejects.toThrow()
+  })
+
+  test('Should throw if no email is provider to load method', () => {
+    const { sut } = makeSut()
+    const promise = sut.load()
+
+    expect(promise).rejects.toThrow(new MissingParamsError('email'))
   })
 })
