@@ -1,3 +1,4 @@
+import { MissingParamsError } from '../../utils/errors'
 import MongoHelper from '../helpers/mongo-helper'
 
 class UpdateAccessTokenRepository {
@@ -6,6 +7,14 @@ class UpdateAccessTokenRepository {
   }
 
   async update (userId, accessToken) {
+    if (!userId) {
+      throw new MissingParamsError('userId')
+    }
+
+    if (!accessToken) {
+      throw new MissingParamsError('accessToken')
+    }
+
     await this.userModel.updateOne({
       _id: userId
     }, {
@@ -74,5 +83,11 @@ describe('UpdateAccessTokenRepository', () => {
     const promise = sut.update(fakeUser._id, 'valid_token')
 
     expect(promise).rejects.toThrow()
+  })
+
+  test('Should throw if no params are provider to load method', async () => {
+    const { sut, fakeUser } = await makeSut()
+    expect(sut.update()).rejects.toThrow(new MissingParamsError('userId'))
+    expect(sut.update(fakeUser._id)).rejects.toThrow(new MissingParamsError('accessToken'))
   })
 })
