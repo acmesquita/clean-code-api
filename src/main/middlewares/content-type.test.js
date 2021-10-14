@@ -10,4 +10,14 @@ describe('Content-Type Middlewere', () => {
       .get('/teste_content_type')
       .expect('content-type', /json/)
   })
+
+  test('Should return content-type if forced', async () => {
+    app.get('/teste_content_type_forced', (req, res) => {
+      res.type('xml')
+      res.send('')
+    })
+    await request(app)
+      .get('/teste_content_type_forced')
+      .expect('content-type', /xml/)
+  })
 })
