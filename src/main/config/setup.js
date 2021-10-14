@@ -1,8 +1,10 @@
 import cors from '../middlewares/cors'
-import { json } from '../middlewares/json-parse'
+import jsonParser from '../middlewares/json-parse'
+import contentType from '../middlewares/content-type'
 
 export function setup (app) {
   app.disable('x-powered-by')
   app.use(cors)
-  app.use(json())
+  app.use(jsonParser)
+  app.use(contentType)
 }

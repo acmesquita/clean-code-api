@@ -1,1 +1,3 @@
-export { json } from 'express'
+import { json } from 'express'
+
+export default json()
