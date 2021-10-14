@@ -1,7 +1,3 @@
-import express from 'express'
+import app from './config/app'
 
-const app = express()
-
-app.listen(5656, () => {
-  console.log('Server running')
-})
+app.listen(5656, () => console.log('Server running'))
