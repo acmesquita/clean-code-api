@@ -8,11 +8,11 @@
   "type": "module",
   "scripts": {
     "start": "node --es-module-specifier-resolution=node src/main/index.js",
-    "test": "jest --es-module-specifier-resolution=node --colors --noStackTrace --passWithNoTests",
+    "test": "jest --es-module-specifier-resolution=node --colors --noStackTrace --passWithNoTests --runInBand",
     "test:unit": "yarn test --watch -c jest-unit.config.js",
-    "test:integration": "yarn test -- --watch -c jest-integration.config.js",
+    "test:integration": "yarn test --watch -c jest-integration.config.js",
     "test:staged": "yarn test  --silent",
-    "test:ci": "yarn test -- --coverage  --silent"
+    "test:ci": "yarn test --coverage  --silent"
   },
   "standard": {
     "env": [
