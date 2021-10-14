@@ -6,8 +6,13 @@ import { LoginRouter } from './login-router'
 const makeSut = () => {
   const authUseCaseSpy = makeAuthUseCase()
   const emailValidator = makeEmailValidator()
+  const sut = new LoginRouter({
+    authUseCase: authUseCaseSpy,
+    emailValidator
+  })
+
   return {
-    sut: new LoginRouter(authUseCaseSpy, emailValidator),
+    sut,
     authUseCaseSpy,
     emailValidator
   }
