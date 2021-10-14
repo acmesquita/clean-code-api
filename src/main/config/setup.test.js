@@ -10,4 +10,15 @@ describe('App Setup', () => {
 
     expect(response.headers['x-powered-by']).toBeUndefined()
   })
+
+  test('Should enable cors', async () => {
+    app.get('/teste_cors', (req, res) => {
+      res.send('test_header')
+    })
+    const response = await request(app).get('/teste_cors')
+
+    expect(response.headers['access-control-allow-origin']).toBe('*')
+    expect(response.headers['access-control-allow-methods']).toBe('*')
+    expect(response.headers['access-control-allow-headers']).toBe('*')
+  })
 })
