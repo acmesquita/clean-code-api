@@ -30,4 +30,11 @@ describe('Login Routes', () => {
       password: 'hashed_password'
     }).expect(200)
   })
+
+  test('Should return 401 when invalid credential are provider', async () => {
+    await request(app).post('/api/login').send({
+      email: 'invalid_email@mail.com',
+      password: 'hashed_password'
+    }).expect(401)
+  })
 })
