@@ -1,12 +1,12 @@
 import { MongoClient } from 'mongodb'
 
 export default class MongoHelper {
-  static async connect (uri, dbName) {
+  static async connect (uri) {
     this.client = await MongoClient.connect(uri, {
       useNewUrlParser: true,
       useUnifiedTopology: true
     })
-    this.db = await this.client.db(dbName)
+    this.db = await this.client.db()
   }
 
   static async disconnect () {
