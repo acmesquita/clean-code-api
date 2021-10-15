@@ -10,6 +10,7 @@ export class LoadUserByEmailRepository {
     const userModel = await MongoHelper.collection('users')
     const user = await userModel.findOne({ email }, {
       projection: {
+        _id: 1,
         password: 1
       }
     })

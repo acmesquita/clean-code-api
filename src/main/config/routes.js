@@ -4,7 +4,7 @@ const router = Router()
 
 export function setupRoutes (app) {
   app.use('/api', router)
-  fg.sync('**/src/main/routes/**.js').forEach(async path => {
+  fg.sync('**/src/main/routes/**routes.js').forEach(async path => {
     const { default: route } = await import(`../../../${path}`)
     route(router)
   })

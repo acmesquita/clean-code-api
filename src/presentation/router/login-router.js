@@ -30,7 +30,7 @@ export class LoginRouter {
 
       return HttpResponse.ok({ accessToken })
     } catch (error) {
-      // console.error(error) - Criando log
+      console.error(error)
       return HttpResponse.serverError()
     }
   }

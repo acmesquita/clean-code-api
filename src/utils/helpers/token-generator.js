@@ -15,6 +15,6 @@ export class TokenGenerator {
       throw new MissingParamsError('value')
     }
 
-    return jwt.sign(value, this.secret)
+    return jwt.sign({ value }, this.secret)
   }
 }

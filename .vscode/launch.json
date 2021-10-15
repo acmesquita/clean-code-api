@@ -15,6 +15,12 @@
       "name": "Run yarn test:unit",
       "request": "launch",
       "type": "node-terminal"
+    },
+    {
+      "command": "yarn test:integration",
+      "name": "Run yarn test:integration",
+      "request": "launch",
+      "type": "node-terminal"
     }
   ]
 }

@@ -2,6 +2,15 @@ import validator from 'validator'
 import { MissingParamsError } from '../errors'
 import { EmailValidator } from './email-validator'
 
+jest.mock('validator', () => ({
+  isEmailValid: true,
+  email: '',
+  isEmail (email) {
+    this.email = email
+    return this.isEmailValid
+  }
+}))
+
 const makeSut = () => {
   return new EmailValidator()
 }
