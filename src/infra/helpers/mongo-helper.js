@@ -12,4 +12,8 @@ export default class MongoHelper {
   static async disconnect () {
     await this.client.close()
   }
+
+  static async collection (collectionName) {
+    return await this.db.collection(collectionName)
+  }
 }

@@ -24,7 +24,7 @@ const makeSut = async () => {
   const { userModel, fakeUser } = await makeUserModel()
 
   return {
-    sut: new UpdateAccessTokenRepository(userModel),
+    sut: new UpdateAccessTokenRepository(),
     userModel,
     fakeUser
   }
@@ -51,15 +51,6 @@ describe('UpdateAccessTokenRepository', () => {
 
     const updatedFakeUser = await userModel.findOne({ _id: fakeUser._id })
     expect(updatedFakeUser.accessToken).toBe('valid_token')
-  })
-
-  test('Should throw if no UserModel is provider', async () => {
-    const { fakeUser } = await makeUserModel()
-    const sut = new UpdateAccessTokenRepository()
-
-    const promise = sut.update(fakeUser._id, 'valid_token')
-
-    expect(promise).rejects.toThrow()
   })
 
   test('Should throw if no params are provider to load method', async () => {

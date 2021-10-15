@@ -1,15 +1,14 @@
 import { MissingParamsError } from '../../utils/errors'
+import MongoHelper from '../helpers/mongo-helper'
 
 export class LoadUserByEmailRepository {
-  constructor (userModel) {
-    this.userModel = userModel
-  }
-
   async load (email) {
     if (!email) {
       throw new MissingParamsError('email')
     }
-    const user = await this.userModel.findOne({ email }, {
+
+    const userModel = await MongoHelper.collection('users')
+    const user = await userModel.findOne({ email }, {
       projection: {
         password: 1
       }
