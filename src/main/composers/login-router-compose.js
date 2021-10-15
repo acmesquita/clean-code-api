@@ -13,7 +13,7 @@ const updateAccessTokenRepository = new UpdateAccessTokenRepository()
 const encryper = new Encrypter()
 const tokenGenerator = new TokenGenerator(env.tokenSecret)
 
-const authUseCase = AuthUseCase({ loadUserByEmailRepository, updateAccessTokenRepository, encryper, tokenGenerator })
+const authUseCase = new AuthUseCase({ loadUserByEmailRepository, updateAccessTokenRepository, encryper, tokenGenerator })
 const emailValidator = new EmailValidator()
 const loginRouter = new LoginRouter({ authUseCase, emailValidator })
 
