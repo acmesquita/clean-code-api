@@ -11,21 +11,21 @@ export class HttpResponse {
   static unauthorizedErro () {
     return {
       statusCode: 401,
-      body: new UnauthorizedErro()
+      body: new UnauthorizedErro().message
     }
   }
 
   static badRequest (error) {
     return {
       statusCode: 400,
-      body: error
+      body: error.message
     }
   }
 
   static serverError () {
     return {
       statusCode: 500,
-      body: new ServerError()
+      body: new ServerError().message
     }
   }
 }

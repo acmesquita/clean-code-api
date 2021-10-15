@@ -1,0 +1,43 @@
+POST http://localhost:5656/api/login HTTP/1.1
+content-type: application/json
+
+{}
+
+###
+
+POST http://localhost:5656/api/login HTTP/1.1
+content-type: application/json
+
+{
+  "email": "email@mail.com"
+}
+
+###
+
+POST http://localhost:5656/api/login HTTP/1.1
+content-type: application/json
+
+{
+  "email": "invalid_email",
+  "password": "hashed_password"
+}
+
+###
+
+POST http://localhost:5656/api/login HTTP/1.1
+content-type: application/json
+
+{
+  "email": "invalid@mail.com",
+  "password": "hased_password"
+}
+
+###
+
+POST http://localhost:5656/api/login HTTP/1.1
+content-type: application/json
+
+{
+  "email": "valid@mail.com",
+  "password": "hashed_password"
+}
